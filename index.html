@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Paga tu pedido — El Trebolito</title>
+<style>
+  :root {
+    --crema: #fdf6ee;
+    --cafe: #5b3a29;
+    --rosa: #c94f7c;
+    --verde: #2e9e5b;
+    --carta: #ffffff;
+    --texto: #3d2b1f;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --crema: #211a14;
+      --cafe: #e8d5c4;
+      --carta: #2e241c;
+      --texto: #f0e6dc;
+    }
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: var(--crema);
+    color: var(--texto);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px 48px;
+  }
+  header { text-align: center; margin-bottom: 24px; }
+  header .emoji { font-size: 3rem; }
+  h1 { color: var(--cafe); font-size: 1.5rem; margin-top: 4px; }
+  header p { opacity: .75; margin-top: 4px; font-size: .95rem; }
+  main { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 14px; }
+  .campo {
+    background: var(--carta);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.07);
+  }
+  .campo .etiqueta {
+    font-size: .8rem;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    opacity: .6;
+    margin-bottom: 4px;
+  }
+  .campo .valor {
+    font-size: 1.25rem;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    word-break: break-all;
+    margin-bottom: 10px;
+  }
+  .campo .valor.texto { font-size: 1.1rem; }
+  button.copiar {
+    width: 100%;
+    padding: 14px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #fff;
+    background: var(--rosa);
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  button.copiar:active { transform: scale(.98); }
+  button.copiar.ok { background: var(--verde); }
+  .pasos {
+    background: var(--carta);
+    border-radius: 16px;
+    padding: 16px;
+    font-size: .92rem;
+    line-height: 1.6;
+    box-shadow: 0 2px 8px rgba(0,0,0,.07);
+  }
+  .pasos strong { color: var(--rosa); }
+  footer { margin-top: 28px; font-size: .8rem; opacity: .55; text-align: center; }
+</style>
+</head>
+<body>
+<header>
+  <div class="emoji">🍀🧁</div>
+  <h1>Pastelería El Trebolito</h1>
+  <p>Paga tu pedido por transferencia — sin comisiones</p>
+</header>
+
+<main>
+  <div class="campo">
+    <div class="etiqueta">Número de tarjeta</div>
+    <div class="valor" id="tarjeta">4152 3146 5445 7350</div>
+    <button class="copiar" data-copia="tarjeta">Copiar número de tarjeta</button>
+  </div>
+
+  <!-- Cuando tengas tu CLABE, descomenta este bloque y pon los 18 dígitos:
+  <div class="campo">
+    <div class="etiqueta">CLABE interbancaria</div>
+    <div class="valor" id="clabe">000000000000000000</div>
+    <button class="copiar" data-copia="clabe">Copiar CLABE</button>
+  </div>
+  -->
+
+
+  <div class="campo">
+    <div class="etiqueta">Beneficiario</div>
+    <div class="valor texto">Ernesto Cadenas Gutiérrez</div>
+  </div>
+
+  <div class="campo">
+    <div class="etiqueta">Banco</div>
+    <div class="valor texto">BBVA</div>
+  </div>
+
+  <div class="pasos">
+    <strong>Cómo pagar:</strong><br>
+    1. Toca <strong>Copiar número de tarjeta</strong>.<br>
+    2. Abre la app de tu banco → Transferir → a tarjeta de débito.<br>
+    3. Pega el número, escribe el monto de tu compra.<br>
+    4. Confirma y muéstranos el comprobante. ¡Gracias! 💛
+  </div>
+</main>
+
+<footer>Transferencia SPEI directa — segura y sin costo extra.</footer>
+
+<script>
+  document.querySelectorAll("button.copiar").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var texto = document.getElementById(btn.dataset.copia).textContent.replace(/\s+/g, "");
+      var listo = function () {
+        var original = btn.textContent;
+        btn.textContent = "¡Copiado! ✓";
+        btn.classList.add("ok");
+        setTimeout(function () {
+          btn.textContent = original;
+          btn.classList.remove("ok");
+        }, 2000);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(texto).then(listo);
+      } else {
+        var ta = document.createElement("textarea");
+        ta.value = texto;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        listo();
+      }
+    });
+  });
+</script>
+</body>
+</html>
